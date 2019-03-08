@@ -16,5 +16,13 @@ steps:
 - script: dotnet build --configuration $(buildConfiguration)
   displayName: 'dotnet build $(buildConfiguration)'
 
-- script: dotnet publish --configuration $(buildConfiguration)
+- script: dotnet publish $(Build.Repository.LocalPath)/SampleApp.csproj --configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/publishApiOuput
   displayName: 'publish project'
+
+- task: ArchiveFiles@2
+  displayName: 'Creating app archive file'
+  inputs:
+    rootFolderOrFile: '$(Build.ArtifactStagingDirectory)/publishApiOuput'
+    includeRootFolder: false
+    archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+    replaceExistingArchive: true
